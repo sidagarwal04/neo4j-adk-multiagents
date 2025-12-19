@@ -51,7 +51,7 @@ The system connects to a demo Neo4j database (READ-ONLY) containing a subset (~2
 
 - 237,358 nodes representing organizations, people, articles, industries, and technologies
 - Investment relationships between companies and investors
-- Articles with sentiment analysis
+- Articles mentioning companies with sentiment analysis (chunked and indexed as vector embeddings)
 - Industry categorizations and competitive intelligence
 
 ![companies-graph](https://github.com/user-attachments/assets/72648a42-98c6-4705-b13c-0ad3e51d5499)
@@ -87,43 +87,42 @@ source .venv/bin/activate  # On macOS/Linux
 uv pip install -r requirements.txt
 ```
 
-4. Generate MCP Toolbox configuration from environment variables:
+## Configuration
+
+### Environment Setup
+
+1. Create a `.env` file from the template:
+
+```bash
+cp example.env .env
+```
+
+2. Update the `.env` file with your credentials and configuration values (see sections below).
+
+3. Generate MCP Toolbox configuration from environment variables:
+
 ```bash
 python setup_tools_yaml.py
 ```
 
 This generates `investment_agent/.adk/tools.yaml` from your `.env` file settings.
 
-## Configuration
-
 ### Neo4j Database
 
-The project connects to a demo Neo4j database containing the **Company News Knowledge Graph** - a small subset (250k entities) of [Diffbot's](https://www.diffbot.com/products/knowledge-graph/) global Knowledge Graph (50 billion entities).
-
-**Dataset Contents:**
-- Organizations and company information
-- People in leadership positions
-- Locations and industries
-- Articles mentioning companies (chunked and indexed as vector embeddings)
-
-**Demo Database Credentials:**
-
-This is a **read-only** version of the knowledge graph:
-
-| Setting | Value |
-|---------|-------|
-| **URL** | `https://demo.neo4jlabs.com:7473` |
-| **Username** | `companies` |
-| **Password** | `companies` |
-| **Database** | `companies` |
-
-In your `.env` file, configure:
+This is a **read-only** version of the knowledge graph. Add these database credentials to your `.env` file:
 
 ```env
 NEO4J_URI=neo4j+s://demo.neo4jlabs.com
 NEO4J_USERNAME=companies
 NEO4J_PASSWORD=companies
 ```
+
+| Setting | Value |
+|---------|-------|
+| **URL** | `https://demo.neo4jlabs.com:7473` (browser access) |
+| **Username** | `companies` |
+| **Password** | `companies` |
+| **Database** | `companies` |
 
 ### Google API Configuration
 
