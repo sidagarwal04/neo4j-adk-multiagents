@@ -27,12 +27,15 @@ This is an implementation of a sophisticated multi-agent investment research sys
 
 ### Multi-Agent System
 
-The project implements three specialized agents orchestrated by a root agent:
+The project implements specialized agents orchestrated by a root agent:
 
-1. **Graph Database Agent**: Executes direct Cypher queries for structural questions and aggregations
-2. **Investor Research Agent**: Discovers investment relationships between companies
-3. **Investment Research Agent**: Analyzes companies and market trends using MCP Toolbox tools
-4. **Root Agent**: Orchestrates all sub-agents, routes requests, and validates results
+1. **Graph Database Agent**: Fetches the Neo4j graph database schema and executes read queries. Generates Cypher queries to fulfill information requests with a focus on structural questions, aggregations, sorting, and filtering. Falls back for complex queries when specialized agents aren't applicable.
+
+2. **Investor Research Agent**: Discovers investors in companies or organizations by exact name or ID. Provides investment relationship data including investor names, IDs, and types (Organization or Person).
+
+3. **Investment Research Agent**: Accesses a comprehensive knowledge graph of companies, people, articles, industries, and technologies. Uses MCP Toolbox tools to fetch industries, companies in industries, articles, organization mentions, and people involvement data.
+
+4. **Root Agent**: Orchestrates all sub-agents, routes requests intelligently, and handles the overall workflow. Prefers specialized research agents over the database agent and renders results as tables, charts, or artifacts when requested.
 
 ### Model Context Protocol (MCP) Integration
 
