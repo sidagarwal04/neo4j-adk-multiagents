@@ -1,0 +1,11 @@
+[project]
+name = "neo4j-google-adk"
+version = "0.1.0"
+description = "AI-powered investment research agent using Google ADK and Neo4j graph database"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "google-adk>=1.21.0",
+    "neo4j>=6.0.3",
+    "python-dotenv>=1.0.0",
+]
