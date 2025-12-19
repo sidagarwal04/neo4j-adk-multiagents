@@ -1,6 +1,6 @@
 # Multi-Agent Investment Research System: Google ADK, MCP Toolbox & Neo4j
 
-Build your own AI-powered multi-agent investment research system using [Google's Agent Development Kit (ADK)](https://github.com/google/adk-python), [Model Context Protocol (MCP) Toolbox](https://github.com/googleapis/genai-toolbox), and [Neo4j](https://neo4j.com/) graph database. This project demonstrates how to combine intelligent multi-agent orchestration with pre-validated database queries and knowledge graph analysis for sophisticated enterprise AI applications.
+Build your own AI-powered multi-agent investment research system using [Google's Agent Development Kit (ADK)](https://github.com/google/adk-python), [Model Context Protocol (MCP) Toolbox](https://github.com/googleapis/genai-toolbox), and [Neo4j](https://github.com/neo4j/neo4j) graph database. This project demonstrates how to combine intelligent multi-agent orchestration with pre-validated database queries and knowledge graph analysis for sophisticated enterprise AI applications.
 
 Based on the [Google Cloud Community Article: "Using Google's Agent Development Kit (ADK) with MCP Toolbox and Neo4j"](https://discuss.google.dev/t/using-googles-agent-development-kit-adk-with-mcp-toolbox-and-neo4j/187356).
 
@@ -12,7 +12,7 @@ This is an implementation of a sophisticated multi-agent investment research sys
 
 - **[Google Agent Development Kit (ADK)](https://google.github.io/adk-docs/)**: Provides the framework for building and orchestrating multi-agent systems with advanced reasoning capabilities using Gemini models
 - **[Model Context Protocol (MCP) Toolbox](https://googleapis.github.io/genai-toolbox/)**: Enables declarative definition and deployment of pre-validated, domain-specific database queries as reusable tools
-- **[Neo4j Graph Database](https://neo4j.com/)**: Stores and queries the Company News Knowledge Graph with relationships and entities
+- **[Neo4j Graph Database](https://github.com/neo4j/neo4j)**: Stores and queries the Company News Knowledge Graph with relationships and entities
 
 ### System Features:
 
@@ -47,7 +47,7 @@ The project implements specialized agents orchestrated by a root agent:
 
 ### Data Sources
 
-The system connects to a demo Neo4j database containing a subset of [Diffbot's](https://diffbot.com/) global Knowledge Graph with:
+The system connects to a demo Neo4j database containing a subset of [Diffbot's](https://www.diffbot.com/products/knowledge-graph/) global Knowledge Graph with:
 
 - 237,358 nodes representing organizations, people, articles, industries, and technologies
 - Investment relationships between companies and investors
@@ -58,7 +58,7 @@ The system connects to a demo Neo4j database containing a subset of [Diffbot's](
 
 - Python 3.11+
 - [Google ADK](https://google.github.io/adk-docs/): For multi-agent orchestration
-- [Neo4j Database](https://neo4j.com/): Graph database (demo instance provided)
+- [Neo4j Database](https://github.com/neo4j/neo4j): Graph database (demo instance provided)
 - [MCP Toolbox](https://googleapis.github.io/genai-toolbox/): For database query management (optional for development)
 - Google API credentials (Google AI API or Vertex AI)
 - uv package manager
@@ -95,7 +95,7 @@ This generates `investment_agent/.adk/tools.yaml` from your `.env` file settings
 
 ### Neo4j Database
 
-The project connects to a demo Neo4j database containing the **Company News Knowledge Graph** - a small subset (250k entities) of [Diffbot's](https://diffbot.com/) global Knowledge Graph (50 billion entities).
+The project connects to a demo Neo4j database containing the **Company News Knowledge Graph** - a small subset (250k entities) of [Diffbot's](https://www.diffbot.com/products/knowledge-graph/) global Knowledge Graph (50 billion entities).
 
 **Dataset Contents:**
 - Organizations and company information
@@ -336,10 +336,11 @@ uv pip install google-adk neo4j
 
 ## Dependencies
 
-- `google-adk>=1.21.0`: Google ADK framework
-- `neo4j>=6.0.3`: Neo4j Python driver
+See `requirements.txt` for the complete list of dependencies:
 
-See `pyproject.toml` for complete dependency list.
+- `google-adk>=1.21.0`: Google ADK framework for multi-agent orchestration
+- `neo4j>=6.0.3`: Neo4j Python driver for graph database queries
+- `python-dotenv>=1.0.0`: Environment variable management
 
 ## License
 
@@ -389,8 +390,3 @@ The article provides comprehensive guidance on:
 - [GraphRAG](https://graphrag.com/)
 - [Neo4j GenAI Ecosystem](https://neo4j.com/labs/genai-ecosystem)
 - [AI Agents with Neo4j and MCP Toolbox](https://neo4j.com/blog/developer/ai-agents-gen-ai-toolbox/)
-
-**Demo Dataset:**
-- [Colab Notebook](https://colab.sandbox.google.com/drive/1f0GYXrO8pZsoJnyKDDxzFZVaYgXhx3ME#scrollTo=FSlyylN9HBJh) with full implementation
-- [Diffbot Knowledge Graph](https://diffbot.com/) (50 billion entities)
-- Demo Database: `neo4j+s://demo.neo4jlabs.com` (Read-only companies graph)
