@@ -1,14 +1,10 @@
 # Multi-Agent Investment Research System: Google ADK, MCP Toolbox & Neo4j
 
-Build your own AI-powered multi-agent investment research system using [Google's Agent Development Kit (ADK)](https://github.com/google/adk-python), [Model Context Protocol (MCP) Toolbox](https://github.com/googleapis/genai-toolbox), and [Neo4j](https://github.com/neo4j/neo4j) graph database. This project demonstrates how to combine intelligent multi-agent orchestration with pre-validated database queries and knowledge graph analysis for sophisticated enterprise AI applications.
-
-Based on the [Google Cloud Community Article: "Using Google's Agent Development Kit (ADK) with MCP Toolbox and Neo4j"](https://discuss.google.dev/t/using-googles-agent-development-kit-adk-with-mcp-toolbox-and-neo4j/187356).
+Build your own GenAI-powered multi-agent investment research system using [Google's Agent Development Kit (ADK)](https://github.com/google/adk-python), [Model Context Protocol (MCP) Toolbox](https://github.com/googleapis/genai-toolbox), and [Neo4j](https://github.com/neo4j/neo4j) graph database. This project demonstrates how to combine intelligent multi-agent orchestration with pre-validated database queries and knowledge graph analysis for sophisticated enterprise AI applications.
 
 ## About This Project
 
 This is an implementation of a sophisticated multi-agent investment research system that demonstrates the power of combining three key technologies:
-
-### Core Technologies:
 
 - **[Google Agent Development Kit (ADK)](https://google.github.io/adk-docs/)**: Provides the framework for building and orchestrating multi-agent systems with advanced reasoning capabilities using Gemini models
 - **[Model Context Protocol (MCP) Toolbox](https://googleapis.github.io/genai-toolbox/)**: Enables declarative definition and deployment of pre-validated, domain-specific database queries as reusable tools
@@ -155,7 +151,7 @@ The Agent Development Kit (ADK) uses a specified Gemini model for agent reasonin
 GOOGLE_ADK_MODEL=your_model_here
 ```
 
-Available models: See the [ADK Documentation](https://google.github.io/adk-docs/) for the latest available Gemini models.
+Available models: See the [ADK Documentation](https://google.github.io/adk-docs/agents/models/) for the latest available Gemini models.
 
 ### MCP Toolbox Configuration
 
