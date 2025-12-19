@@ -47,7 +47,7 @@ The project implements specialized agents orchestrated by a root agent:
 
 ### Data Sources
 
-The system connects to a demo Neo4j database (READ-ONLY) containing a subset (~250K entities) [Diffbot's](https://www.diffbot.com/products/knowledge-graph/) global Knowledge Graph (50bn+ entities) with:
+The system connects to a demo Neo4j database (READ-ONLY) containing a subset (~250K entities) of [Diffbot's](https://www.diffbot.com/products/knowledge-graph/) global Knowledge Graph (50bn+ entities) with:
 
 - 237,358 nodes representing organizations, people, articles, industries, and technologies
 - Investment relationships between companies and investors
