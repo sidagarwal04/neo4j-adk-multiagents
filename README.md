@@ -169,14 +169,12 @@ For more information on deploying MCP Toolbox, see the [MCP Toolbox Documentatio
 
 ## Usage
 
-### Running the Web Interface (Recommended)
+### Running the Web Interface
 
 The ADK provides a rich web UI for interactive agent testing with debug information including tool invocations, parameters, and errors:
 
 ```bash
-uv rcurl http://127.0.0.1:8000/health
-curl http://127.0.0.1:8000/api/health
-curl http://127.0.0.1:8000/v1/agentsun adk web
+uv run adk web
 ```
 
 Access the interface at `http://127.0.0.1:8000` and:
@@ -184,16 +182,6 @@ Access the interface at `http://127.0.0.1:8000` and:
 - Chat interactively with the investment research system
 - Inspect tool invocations and debug information
 - See the agent's reasoning and multi-step execution flow
-
-### Running the API Server
-
-For programmatic access via REST API:
-
-```bash
-uv run adk api_server
-```
-
-Refer to the [ADK API Documentation](https://google.github.io/adk-docs/) for endpoint details and how to interact with agents programmatically.
 
 ### Example Queries
 
