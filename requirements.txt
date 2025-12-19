@@ -1,11 +1,4 @@
-# Production dependencies
+# Core dependencies
 google-adk>=1.21.0
 neo4j>=6.0.3
 python-dotenv>=1.0.0
-
-# Optional development dependencies
-# Uncomment to install:
-# pytest>=7.0.0
-# black>=23.0.0
-# flake8>=5.0.0
-# mypy>=0.990

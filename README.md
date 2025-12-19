@@ -64,26 +64,19 @@ The system connects to a demo Neo4j database containing a subset of [Diffbot's](
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd neo4j-google-adk
+git clone https://github.com/sidagarwal04/neo4j-adk-multiagents.git
+cd neo4j-adk-multiagents
 ```
 
-2. Create a virtual environment using uv:
+2. Create a virtual environment and install dependencies using uv:
 ```bash
-uv venv
+uv sync
 source .venv/bin/activate  # On macOS/Linux
 # or
 .venv\Scripts\activate  # On Windows
 ```
 
-3. Install dependencies:
-```bash
-uv pip install -r requirements.txt
-# or
-uv sync
-```
-
-4. Generate MCP Toolbox configuration from environment variables:
+3. Generate MCP Toolbox configuration from environment variables:
 ```bash
 python setup_tools_yaml.py
 ```
