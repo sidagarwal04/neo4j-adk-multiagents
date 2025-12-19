@@ -68,15 +68,20 @@ git clone https://github.com/sidagarwal04/neo4j-adk-multiagents.git
 cd neo4j-adk-multiagents
 ```
 
-2. Create a virtual environment and install dependencies using uv:
+2. Create a virtual environment using uv:
 ```bash
-uv sync
+uv venv
 source .venv/bin/activate  # On macOS/Linux
 # or
 .venv\Scripts\activate  # On Windows
 ```
 
-3. Generate MCP Toolbox configuration from environment variables:
+3. Install dependencies:
+```bash
+uv pip install -r requirements.txt
+```
+
+4. Generate MCP Toolbox configuration from environment variables:
 ```bash
 python setup_tools_yaml.py
 ```
@@ -157,7 +162,7 @@ MCP_TOOLBOX_URL=your_mcp_tools_url_here
 
 For more information on deploying MCP Toolbox, see the [MCP Toolbox Documentation](https://googleapis.github.io/genai-toolbox/).
 
-**⚠️ Security Note:** Never commit your `.env` file to version control. The `.gitignore` is configured to exclude it. Use `.env.example` as a template.
+**⚠️ Security Note:** Never commit your `.env` file to version control. The `.gitignore` is configured to exclude it. Use `example.env` as a template.
 
 ### Default Configuration Values
 
