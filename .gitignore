@@ -39,3 +39,7 @@ __adk_agent_builder_assistant/.adk/session.db
 .python-version
 .idea/
 *.log
+
+# Python packaging
+pyproject.toml
+uv.lock
