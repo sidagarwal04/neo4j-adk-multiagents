@@ -165,7 +165,12 @@ Configure the Model Context Protocol (MCP) Toolbox endpoint:
 MCP_TOOLBOX_URL=https://toolbox-990868019953.us-central1.run.app/mcp/sse
 ```
 
-For more information on deploying MCP Toolbox, see the [MCP Toolbox Documentation](https://googleapis.github.io/genai-toolbox/).
+**Note:** This URL is specifically configured for **Neo4j database integration**. If you're using this system with a different database provider (PostgreSQL, MySQL, Google Cloud Spanner, etc.) or for other use cases, you'll need to:
+1. Deploy your own MCP Toolbox instance
+2. Update the `MCP_TOOLBOX_URL` to point to your deployment
+3. Configure the appropriate database queries in your MCP Toolbox configuration
+
+For more information on deploying MCP Toolbox for your specific database, see the [MCP Toolbox Documentation](https://googleapis.github.io/genai-toolbox/).
 
 ## Usage
 
@@ -178,10 +183,12 @@ uv run adk web
 ```
 
 Access the interface at `http://127.0.0.1:8000` and:
-- Select agents from the top-left menu
+- **Select `root_agent` from the top-left menu** (this is the only agent you should interact with directly)
 - Chat interactively with the investment research system
 - Inspect tool invocations and debug information
 - See the agent's reasoning and multi-step execution flow
+
+**Note:** The `root_agent` is the orchestrator that automatically coordinates the specialized helper agents (`graph_database_agent`, `investor_research_agent`, `investment_research_agent`) internally. You should always select only `root_agent` for queries.
 
 ### Example Queries
 
@@ -189,23 +196,89 @@ The system can answer complex multi-step questions:
 
 **Finding Competitors:**
 ```
-"What are the main competitors of YouTube?"
+"Who are the main competitors of YouTube?"
 ```
-The agent queries the database to find competitor relationships.
+
+Expected output:
+```
+The main competitors of YouTube are:
+
+TikTok (and its parent company ByteDance)
+Dailymotion
+Twitter
+BuzzFeed
+Mixer
+OpenAI
+Fox Broadcasting
+Oxygen
+Violin Systems
+```
 
 **Market Analysis:**
 ```
 "What are 5 companies mentioned in articles from January 2023 with good sentiment and who are the people working there?"
 ```
-The agent finds relevant articles, identifies companies, and looks up leadership.
+
+Expected output:
+```
+Based on articles from January 2023 with the highest positive sentiment, here are 5 mentioned companies and the key people working there (CEOs and Board Members):
+
+Xerox Holdings Corporation
+Article: "Xerox Acquires Advanced UK" (Sentiment: 0.989)
+Key People: Steve Bandrowczak, Keith Cozza, M. François Bourzeix, Jacques-Edouard Gueden, Jesse A Lynn, Aris Kekedjian, James L. Nelson.
+
+Samsung
+Article: "Gemalto : secure smart chip to be integrated in the Samsung Galaxy S8 in selected markets" (Sentiment: 0.980)
+Key People: LEE JAE CHUL (이재철), JAWOOK KOO.
+
+Simplilearn
+Article: "Simplilearn Further Strengthens Its Leadership with the Appointment of Eric Martorano as CRO for Its Commercial Business" (Sentiment: 0.978)
+Key People: Krishna Kumar, Ram Gupta, Ashish Gupta, Vikram Godse, Brad Geddes, Rajesh Raju.
+
+Unbabel
+Article: "EVS Translations Joins the Unbabel Family" (Sentiment: 0.977)
+Key People: Vasco Pedro, Andy Vitus.
+
+Bionic
+Article: "AI-Powered Ergonomic Workplace Vests" (Sentiment: 0.976)
+Key People: David Kidder.
+```
 
 **Investment Tracking:**
 ```
 "Who has invested in BYTEDANCE and where else have they invested?"
 ```
-The agent finds investors and tracks their portfolio across companies.
 
-## Key Components
+Expected output:
+```
+The investors in BYTEDANCE are:
+
+1. Rong Yue
+   - Also invested in: Inspur
+   
+2. Wendi Murdoch
+   - No other investments in the database besides BYTEDANCE
+```
+
+**Session Summarization:**
+```
+"Summarize the results of the previous research questions"
+```
+
+Expected output:
+```
+Here's a summary of our findings so far:
+
+1. We first determined that there are **8,064 people** represented in the database.
+
+2. Next, we looked up the competitors for **YouTube** and found several, including Mixer, BYTEDANCE, BuzzFeed, TikTok, OpenAI, Dailymotion, Twitter, Fox Broadcasting, Violin Systems, and Oxygen.
+
+3. Finally, we identified the investors in **BYTEDANCE** as **Rong Yue** and **Wendi Murdoch**. We also found that Rong Yue has invested in **Inspur**, while no other investments were listed for Wendi Murdoch in the database besides BYTEDANCE.
+```
+
+This demonstrates the system's ability to maintain context across multiple queries and provide coherent summaries of multi-step research.
+
+<!-- ## Key Components
 
 ### Agents and Tools Architecture
 
@@ -269,7 +342,7 @@ The system integrates with [MCP Toolbox](https://github.com/googleapis/genai-too
 - **Dynamic Loading**: Investment research agent loads tools asynchronously at runtime via `load_tools(MCP_TOOLBOX_URL)`
 - **Database Support**: Neo4j graph queries optimized for relationship analysis
 
-The investment research agent accesses domain-specific database tools without hardcoding queries, providing access to domain-specific database tools without hardcoding queries.
+The investment research agent accesses domain-specific database tools without hardcoding queries, providing access to domain-specific database tools without hardcoding queries. -->
 
 ## Development
 
@@ -291,7 +364,7 @@ def my_tool(param: str) -> str:
     return result
 ```
 
-## Troubleshooting
+<!-- ## Troubleshooting
 
 ### Neo4j Serialization Error
 
@@ -304,7 +377,7 @@ If you encounter `Unable to serialize unknown type: <class 'neo4j.time.DateTime'
 Ensure all dependencies are installed:
 ```bash
 uv pip install google-adk neo4j
-```
+``` -->
 
 ## Dependencies
 
