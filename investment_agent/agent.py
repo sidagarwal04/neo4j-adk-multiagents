@@ -49,9 +49,9 @@ class neo4jDatabase:
 load_dotenv()
 
 db = neo4jDatabase(
-    os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com"),
-    os.getenv("NEO4J_USERNAME", "companies"),
-    os.getenv("NEO4J_PASSWORD", "companies")
+    os.getenv("NEO4J_URI"),
+    os.getenv("NEO4J_USERNAME"),
+    os.getenv("NEO4J_PASSWORD")
 )
 
 # Nodes in the database
@@ -110,7 +110,7 @@ def execute_read_query(query: str, params: dict[str, Any] = {}) -> list[dict[str
 # get_schema()
 # execute_read_query("RETURN 1", None)
 
-MODEL = os.getenv("GOOGLE_ADK_MODEL", "gemini-3-pro-preview")
+MODEL = os.getenv("GOOGLE_ADK_MODEL")
 
 
 graph_database_agent = Agent(
@@ -205,7 +205,7 @@ investor_research_agent = Agent(
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParams
 
 # Get MCP Toolbox URL from environment
-MCP_TOOLBOX_URL = os.getenv("MCP_TOOLBOX_URL", "https://toolbox-990868019953.us-central1.run.app/mcp/sse")
+MCP_TOOLBOX_URL = os.getenv("MCP_TOOLBOX_URL")
 
 async def load_tools(mcp_url):
     async with MCPToolset(connection_params=SseConnectionParams(url=mcp_url)) as toolset:

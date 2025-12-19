@@ -162,30 +162,10 @@ Available models: See the [ADK Documentation](https://google.github.io/adk-docs/
 Configure the Model Context Protocol (MCP) Toolbox endpoint:
 
 ```env
-MCP_TOOLBOX_URL=your_mcp_tools_url_here
+MCP_TOOLBOX_URL=https://toolbox-990868019953.us-central1.run.app/mcp/sse
 ```
 
 For more information on deploying MCP Toolbox, see the [MCP Toolbox Documentation](https://googleapis.github.io/genai-toolbox/).
-
-**⚠️ Security Note:** Never commit your `.env` file to version control. The `.gitignore` is configured to exclude it. Use `example.env` as a template.
-
-### Default Configuration Values
-
-The application provides sensible defaults for some configuration values to enable quick setup with the demo dataset. However, **Google API credentials are required** and have no defaults for security reasons.
-
-**Configuration with defaults:**
-- `NEO4J_URI`: Defaults to demo database `neo4j+s://demo.neo4jlabs.com`
-- `NEO4J_USERNAME`: Defaults to `companies`
-- `NEO4J_PASSWORD`: Defaults to `companies`
-- `GOOGLE_ADK_MODEL`: Defaults to `gemini-3-pro-preview`
-- `MCP_TOOLBOX_URL`: Defaults to public MCP Toolbox endpoint
-
-**Configuration without defaults (required):**
-- `GOOGLE_API_KEY` (for Google AI API): Must be explicitly set
-- `GOOGLE_CLOUD_PROJECT` (for Vertex AI): Must be explicitly set
-- `GOOGLE_CLOUD_LOCATION` (for Vertex AI): Must be explicitly set
-
-The application will raise a clear error if required variables are missing.
 
 ## Usage
 
