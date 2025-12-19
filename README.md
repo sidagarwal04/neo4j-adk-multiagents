@@ -192,7 +192,7 @@ The system can answer complex multi-step questions:
 
 **Finding Competitors:**
 ```
-"Who are the main competitors of YouTube?"
+Who are the main competitors of YouTube?
 ```
 
 Expected output:
@@ -212,7 +212,7 @@ Violin Systems
 
 **Market Analysis:**
 ```
-"What are 5 companies mentioned in articles from January 2023 with good sentiment and who are the people working there?"
+What are 5 companies mentioned in articles from January 2023 with good sentiment and who are the people working there?
 ```
 
 Expected output:
@@ -242,7 +242,7 @@ Key People: David Kidder.
 
 **Investment Tracking:**
 ```
-"Who has invested in BYTEDANCE and where else have they invested?"
+Who has invested in BYTEDANCE and where else have they invested?
 ```
 
 Expected output:
@@ -258,7 +258,7 @@ The investors in BYTEDANCE are:
 
 **Session Summarization:**
 ```
-"Summarize the results of the previous research questions"
+Summarize the results of the previous research questions
 ```
 
 Expected output:
@@ -396,12 +396,12 @@ Contributions are welcome! Please follow these steps:
 3. Test thoroughly
 4. Submit a pull request
 
-## Support
+<!-- ## Support
 
 For issues or questions:
 - Check the [Google ADK documentation](https://google.github.io/adk-docs/)
 - Review [Neo4j Python Driver docs](https://neo4j.com/docs/api/python/current/)
-- Consult the [MCP Toolbox documentation](https://googleapis.github.io/genai-toolbox/)
+- Consult the [MCP Toolbox documentation](https://googleapis.github.io/genai-toolbox/) -->
 
 ## Reference & Attribution
 
