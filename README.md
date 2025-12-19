@@ -54,6 +54,9 @@ The system connects to a demo Neo4j database (READ-ONLY) containing a subset (~2
 - Articles with sentiment analysis
 - Industry categorizations and competitive intelligence
 
+![companies-graph](https://github.com/user-attachments/assets/72648a42-98c6-4705-b13c-0ad3e51d5499)
+
+
 ## Prerequisites
 
 - Python 3.11+
