@@ -8,6 +8,7 @@ from neo4j import GraphDatabase
 from typing import Any
 import re
 from dotenv import load_dotenv
+import asyncio
 
 def serialize_neo4j_value(value: Any) -> Any:
     """Convert Neo4j types to JSON-serializable Python types"""
@@ -213,12 +214,18 @@ async def load_tools(mcp_url):
       tools.extend([get_schema])
       return tools
 
-# Initialize tools with get_schema
-# Note: MCP Toolbox tools from load_tools(MCP_TOOLBOX_URL) are loaded asynchronously at runtime
-# The investment_research_agent uses the base tools list here; additional MCP tools can be loaded
-# when the agent is invoked through the ADK runtime
-tools = [get_schema]
-
+# Initialize tools - load from MCP if URL is provided
+if MCP_TOOLBOX_URL:
+    try:
+        tools = asyncio.run(load_tools(MCP_TOOLBOX_URL))
+    except RuntimeError as e:
+        if "asyncio.run() cannot be called from a running event loop" in str(e):
+            # Already in an event loop, fall back to basic tools
+            tools = [get_schema]
+        else:
+            raise
+else:
+    tools = [get_schema]
 
 investment_research_agent = Agent(
     model=MODEL,
