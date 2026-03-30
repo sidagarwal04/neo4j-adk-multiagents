@@ -80,15 +80,15 @@ def get_schema() -> list[dict[str, Any]]:
     try:
         results = db._execute_query(
             """
-              call apoc.meta.data() yield label, property, type, other, unique, index, elementType
-              where elementType = 'node' and not label starts with '_'
-              with label,
-              collect(case when type = 'RELATIONSHIP' then [property, head(other)] end) as relationships,
-              collect(case when type <> 'RELATIONSHIP' then [property, type + case when unique 
-                      then " unique" else "" end + case when index then " indexed" else "" end] end) 
-              as attributes,
-
-              RETURN label, apoc.map.fromPairs(attributes) as attributes, apoc.map.fromPairs(relationships) as relationships
+CALL apoc.meta.data() YIELD label, property, type, other, unique, index, elementType
+WHERE elementType = 'node' AND NOT label STARTS WITH '_'
+WITH label,
+     // Filter out nulls so fromPairs doesn't break
+     [rel in collect(CASE WHEN type = 'RELATIONSHIP' THEN [property, head(other)] END) WHERE rel IS NOT NULL] AS relList,
+     [attr in collect(CASE WHEN type <> 'RELATIONSHIP' THEN [property, type + CASE WHEN unique THEN " unique" ELSE "" END + CASE WHEN index THEN " indexed" ELSE "" END] END) WHERE attr IS NOT NULL] AS attrList
+RETURN label, 
+       apoc.map.fromPairs(attrList) AS attributes, 
+       apoc.map.fromPairs(relList) AS relationships
               """
         )
         return results
