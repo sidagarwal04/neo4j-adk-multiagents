@@ -10,10 +10,11 @@ import re
 from dotenv import load_dotenv
 import asyncio
 
+
 def serialize_neo4j_value(value: Any) -> Any:
     """Convert Neo4j types to JSON-serializable Python types"""
     from neo4j.time import DateTime, Date, Time, Duration
-    
+
     if isinstance(value, DateTime):
         return value.isoformat()
     elif isinstance(value, Date):
@@ -31,28 +32,32 @@ def serialize_neo4j_value(value: Any) -> Any:
 
 
 class neo4jDatabase:
-    def __init__(self,  neo4j_uri: str, neo4j_username: str, neo4j_password: str):
+    def __init__(self, neo4j_uri: str, neo4j_username: str, neo4j_password: str):
         d = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
         d.verify_connectivity()
         self.driver = d
 
     def is_write_query(self, query: str) -> bool:
-        return re.search(r"\b(MERGE|CREATE|SET|DELETE|REMOVE|ADD)\b", query, re.IGNORECASE) is not None
+        return (
+            re.search(r"\b(MERGE|CREATE|SET|DELETE|REMOVE|ADD)\b", query, re.IGNORECASE)
+            is not None
+        )
 
-    def _execute_query(self, query: str, params: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    def _execute_query(
+        self, query: str, params: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
         if self.is_write_query(query):
             raise "Write Queries are not supported in this agent"
         else:
             result = self.driver.execute_query(query, params)
             return [serialize_neo4j_value(dict(r)) for r in result.records]
 
+
 # Load environment variables
 load_dotenv()
 
 db = neo4jDatabase(
-    os.getenv("NEO4J_URI"),
-    os.getenv("NEO4J_USERNAME"),
-    os.getenv("NEO4J_PASSWORD")
+    os.getenv("NEO4J_URI"), os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD")
 )
 
 # Nodes in the database
@@ -60,20 +65,21 @@ db._execute_query("MATCH () RETURN count(*) as nodes")
 
 # {'nodes': 237358 }
 
-def get_schema() -> list[dict[str,Any]]:
-  """Get the schema of the database, returns node-types(labels) with their types and attributes and relationships between node-labels
-  Args: None
-  Returns:
-    list[dict[str,Any]]: A list of dictionaries representing the schema of the database
-    For example
-    ```
-    [{'label': 'Person','attributes': {'summary': 'STRING','id': 'STRING unique indexed', 'name': 'STRING indexed'},
-      'relationships': {'HAS_PARENT': 'Person', 'HAS_CHILD': 'Person'}}]
-    ```
-  """
-  try:
-      results = db._execute_query(
-              """
+
+def get_schema() -> list[dict[str, Any]]:
+    """Get the schema of the database, returns node-types(labels) with their types and attributes and relationships between node-labels
+    Args: None
+    Returns:
+      list[dict[str,Any]]: A list of dictionaries representing the schema of the database
+      For example
+      ```
+      [{'label': 'Person','attributes': {'summary': 'STRING','id': 'STRING unique indexed', 'name': 'STRING indexed'},
+        'relationships': {'HAS_PARENT': 'Person', 'HAS_CHILD': 'Person'}}]
+      ```
+    """
+    try:
+        results = db._execute_query(
+            """
               call apoc.meta.data() yield label, property, type, other, unique, index, elementType
               where elementType = 'node' and not label starts with '_'
               with label,
@@ -84,10 +90,11 @@ def get_schema() -> list[dict[str,Any]]:
 
               RETURN label, apoc.map.fromPairs(attributes) as attributes, apoc.map.fromPairs(relationships) as relationships
               """
-          )
-      return results
-  except Exception as e:
-      return [{"error":str(e)}]
+        )
+        return results
+    except Exception as e:
+        return [{"error": str(e)}]
+
 
 def execute_read_query(query: str, params: dict[str, Any] = {}) -> list[dict[str, Any]]:
     """
@@ -106,7 +113,8 @@ def execute_read_query(query: str, params: dict[str, Any] = {}) -> list[dict[str
         results = db._execute_query(query, params)
         return results
     except Exception as e:
-        return [{"error":str(e)}]
+        return [{"error": str(e)}]
+
 
 # get_schema()
 # execute_read_query("RETURN 1", None)
@@ -116,7 +124,7 @@ MODEL = os.getenv("GOOGLE_ADK_MODEL")
 
 graph_database_agent = Agent(
     model=MODEL,
-    name='graph_database_agent',
+    name="graph_database_agent",
     description="""
     The graph_database_agent is able to fetch the schema of a neo4j graph database and execute read queries.
     It will generate Cypher queries using the schema to fulfill the information requests and repeatedly
@@ -157,9 +165,7 @@ graph_database_agent = Agent(
       Parameter data can come from the users requests, prior query results or additional lookup queries.
       After the data for the question has been sufficiently retrieved, pass the data and control back to the parent agent.
     """,
-    tools=[
-        get_schema, execute_read_query
-    ]
+    tools=[get_schema, execute_read_query],
 )
 
 
@@ -172,20 +178,46 @@ def get_investors(company: str) -> list[dict[str, Any]]:
         list[dict[str, Any]]: A list of investor ids, names (and their types Organization or Person)
     """
     try:
-        results = db._execute_query("""
+        results = db._execute_query(
+            """
         MATCH p=(o:Organization)<-[r:HAS_INVESTOR]-(i)
         WHERE o.name=$company OR o.id=$company
           AND NOT exists { (o)<-[:SUBSIDARY_OF]-() } 
         RETURN i.id as id, i.name as name, head(labels(i)) as type
-        """, {"company":company})
+        """,
+            {"company": company},
+        )
         return results
     except Exception as e:
-        return [{"error":str(e)}]
-    
+        return [{"error": str(e)}]
+
+
+def find_investor_by_name(company: str) -> list[dict[str, Any]]:
+    """
+    Returns the investors that invested in the company with this exact name.
+    Args:
+        company (str): exact name of the company to find investors in
+    Returns:
+        list[dict[str, Any]]: A list of investor ids, names (and their types Organization or Person)
+    """
+    try:
+        results = db._execute_query(
+            """
+        MATCH (o:Organization)<-[:HAS_INVESTOR]-(i)
+        WHERE o.name=$company
+          AND NOT exists { (o)<-[:SUBSIDARY_OF]-() }
+        RETURN i.id as id, i.name as name, head(labels(i)) as type
+        """,
+            {"company": company},
+        )
+        return results
+    except Exception as e:
+        return [{"error": str(e)}]
+
 
 investor_research_agent = Agent(
     model=MODEL,
-    name='investor_research_agent',
+    name="investor_research_agent",
     description="""
     This investment research agent has the sole purpose of finding investors in
     an company or organization which id identified by a single EXACT name or id,
@@ -194,15 +226,14 @@ investor_research_agent = Agent(
     instruction="""
     You are an agent that has access to a database of investment relationships between companies and indivduals.
     Use the get_investors tool when asked to find the investors of a company by id and name.
+    Use the find_investor_by_name tool when asked to find investors by exact company name.
     If you do so, try to always return not just the factual attribute data but also
     investor ids to allow the other agents to investigate them more.
     """,
-    tools=[
-        get_investors
-    ]
+    tools=[get_investors, find_investor_by_name],
 )
 
-        
+
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParams
 
 # Get MCP Toolbox URL from environment
@@ -217,7 +248,7 @@ else:
 
 investment_research_agent = Agent(
     model=MODEL,
-    name='investment_research_agent',
+    name="investment_research_agent",
     description="""
     This investment research agent has access to a number of tools on a companies and news database.
     It can find industries, companies in industries, articles in a certain month, article details,
@@ -231,19 +262,22 @@ investment_research_agent = Agent(
     If you do so, try to always return not just the factual attribute data but also
     ids of companies, articles, people to allow the other tools to investigate them more.
     """,
-    tools=tools
+    tools=tools,
 )
 
 root_agent = Agent(
     model=MODEL,
-    name='investment_agent',
-    global_instruction = "",
+    name="investment_agent",
+    global_instruction="",
     instruction="""
     You are an agent that has access to a knowledge graph of companies (organizations), people involved with them, articles about companies,
     and industry categories and technologies.
     You have a set of agents to retrieve information from that knowledge graph, if possible prefer the research agents over the database agent.
     If the user requests it, do render tables, charts or other artifacts with the research results.
     """,
-
-    sub_agents=[investor_research_agent, investment_research_agent, graph_database_agent]
+    sub_agents=[
+        investor_research_agent,
+        investment_research_agent,
+        graph_database_agent,
+    ],
 )
