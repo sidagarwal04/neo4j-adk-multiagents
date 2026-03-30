@@ -198,7 +198,7 @@ investor_research_agent = Agent(
     investor ids to allow the other agents to investigate them more.
     """,
     tools=[
-        get_schema, get_investors
+        get_investors
     ]
 )
 
@@ -208,22 +208,10 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParam
 # Get MCP Toolbox URL from environment
 MCP_TOOLBOX_URL = os.getenv("MCP_TOOLBOX_URL")
 
-async def load_tools(mcp_url):
-    async with MCPToolset(connection_params=SseConnectionParams(url=mcp_url)) as toolset:
-      tools = await toolset.load_tools()
-      tools.extend([get_schema])
-      return tools
-
 # Initialize tools - load from MCP if URL is provided
 if MCP_TOOLBOX_URL:
-    try:
-        tools = asyncio.run(load_tools(MCP_TOOLBOX_URL))
-    except RuntimeError as e:
-        if "asyncio.run() cannot be called from a running event loop" in str(e):
-            # Already in an event loop, fall back to basic tools
-            tools = [get_schema]
-        else:
-            raise
+    mcp_toolset = MCPToolset(connection_params=SseConnectionParams(url=MCP_TOOLBOX_URL))
+    tools = [get_schema, mcp_toolset]
 else:
     tools = [get_schema]
 
