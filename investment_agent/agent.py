@@ -208,7 +208,7 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParam
 # Get MCP Toolbox URL from environment
 MCP_TOOLBOX_URL = os.getenv("MCP_TOOLBOX_URL")
 
-async def load_tools(mcp_url):
+"""async def load_tools(mcp_url):
     async with MCPToolset(connection_params=SseConnectionParams(url=mcp_url)) as toolset:
       tools = await toolset.load_tools()
       tools.extend([get_schema])
@@ -224,6 +224,14 @@ if MCP_TOOLBOX_URL:
             tools = [get_schema]
         else:
             raise
+else:
+    tools = [get_schema]"""
+
+if MCP_TOOLBOX_URL:
+    tools = [
+        get_schema,
+        MCPToolset(connection_params=SseConnectionParams(url=MCP_TOOLBOX_URL)),
+    ]
 else:
     tools = [get_schema]
 
