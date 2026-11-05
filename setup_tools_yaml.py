@@ -84,7 +84,8 @@ tools:
     statement: |
       MATCH (a:Article)
       WHERE date($date) <= date(a.date) < date($date) + duration('P1M')
-      RETURN a.id as article_id, a.author as author, a.title as title, toString(a.date) as date, a.sentiment as sentiment
+      RETURN a.id as article_id, a.author as author, a.title as title, toString(a.date) as date,
+             CASE WHEN isNaN(a.sentiment) THEN null ELSE a.sentiment END as sentiment
       LIMIT 25
     description: List of Articles (id, author, title, date, sentiment) in a month timeframe from the given date
     parameters:
@@ -98,7 +99,8 @@ tools:
     statement: |
       MATCH (a:Article {{id: $article_id}})
       RETURN a.id as article_id, a.author as author, a.title as title, 
-             toString(a.date) as date, a.sentiment as sentiment, 
+             toString(a.date) as date,
+             CASE WHEN isNaN(a.sentiment) THEN null ELSE a.sentiment END as sentiment, 
              a.site as site, a.summary as summary, a.content as content
     description: Single Article details by article ID
     parameters:
