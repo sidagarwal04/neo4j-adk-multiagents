@@ -9,12 +9,18 @@ from typing import Any
 import re
 from dotenv import load_dotenv
 import asyncio
+import math
 
 def serialize_neo4j_value(value: Any) -> Any:
     """Convert Neo4j types to JSON-serializable Python types"""
     from neo4j.time import DateTime, Date, Time, Duration
+    from neo4j.graph import Node, Relationship, Path
     
-    if isinstance(value, DateTime):
+    if isinstance(value, float):
+        if math.isnan(value) or math.isinf(value):
+            return None
+        return value
+    elif isinstance(value, DateTime):
         return value.isoformat()
     elif isinstance(value, Date):
         return value.isoformat()
@@ -22,6 +28,10 @@ def serialize_neo4j_value(value: Any) -> Any:
         return value.isoformat()
     elif isinstance(value, Duration):
         return str(value)
+    elif isinstance(value, (Node, Relationship)):
+        return {k: serialize_neo4j_value(v) for k, v in dict(value).items()}
+    elif isinstance(value, Path):
+        return [serialize_neo4j_value(el) for el in value]
     elif isinstance(value, dict):
         return {k: serialize_neo4j_value(v) for k, v in value.items()}
     elif isinstance(value, (list, tuple)):
@@ -203,29 +213,16 @@ investor_research_agent = Agent(
 )
 
         
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParams
+from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, SseConnectionParams
 
 # Get MCP Toolbox URL from environment
 MCP_TOOLBOX_URL = os.getenv("MCP_TOOLBOX_URL")
 
-async def load_tools(mcp_url):
-    async with MCPToolset(connection_params=SseConnectionParams(url=mcp_url)) as toolset:
-      tools = await toolset.load_tools()
-      tools.extend([get_schema])
-      return tools
-
 # Initialize tools - load from MCP if URL is provided
+tools = [get_schema]
 if MCP_TOOLBOX_URL:
-    try:
-        tools = asyncio.run(load_tools(MCP_TOOLBOX_URL))
-    except RuntimeError as e:
-        if "asyncio.run() cannot be called from a running event loop" in str(e):
-            # Already in an event loop, fall back to basic tools
-            tools = [get_schema]
-        else:
-            raise
-else:
-    tools = [get_schema]
+    tools.append(McpToolset(connection_params=SseConnectionParams(url=MCP_TOOLBOX_URL)))
+
 
 investment_research_agent = Agent(
     model=MODEL,
